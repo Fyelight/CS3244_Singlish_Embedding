@@ -14,7 +14,7 @@ Original file is located at
 #from google.colab import auth, files
 #from oauth2client.client import GoogleCredentials
 import pandas as pd
-
+import numpy as np
 # Authenticate and create the PyDrive client.
 #def authenticate():
 #    auth.authenticate_user()
@@ -23,7 +23,9 @@ import pandas as pd
 #    return GoogleDrive(gauth)
 
 #drive = authenticate()
-
+import tensorflow as tf
+sess = tf.Session(config = tf.ConfigProto(log_device_placement = True))
+print(sess)
 # Load the dataset as .csv
 #download = drive.CreateFile({'id': '1MSwZRm3toMCyNrOQ0HbqIhCO1_eYUl5N'})
 #download.GetContentFile('dataset.csv')
@@ -33,7 +35,7 @@ NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
 import string
-translation = str.maketrans(string.ascii_letters, string.ascii_letters, string.digits)
+translation = string.maketrans(string.ascii_letters, string.ascii_letters)
 
 f = lambda x : x.translate(translation)
 sentences = sentences.apply(f)
@@ -97,7 +99,14 @@ x = [context for (context,target) in data]
 y = [target for (context,target) in data]
 x = np.array(x)
 y = np.array(y)
+from keras.models import Sequential
+from keras.layers import Embedding,Lambda,Dense,Activation, Flatten
+from keras.utils import np_utils
+from keras import optimizers
+from keras import backend as K
 
+x= x[0:-1:4]
+y=y[0:-1:4]
 
 dim_embedddings = 20
 model = Sequential()
