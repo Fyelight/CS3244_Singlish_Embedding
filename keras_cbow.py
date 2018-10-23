@@ -7,9 +7,15 @@ Original file is located at
     https://colab.research.google.com/drive/1bcGEl24veoNgjlo-wV9cv8O1G7W8G5NA
 """
 
+import string
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from keras import backend as K
+from keras import optimizers
+from keras.layers import Embedding, Lambda, Dense
+from keras.models import Sequential
 
 sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 print(sess)
@@ -17,8 +23,6 @@ print(sess)
 df = pd.read_csv('COMBINED dataset.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
-
-import string
 
 translation = string.maketrans(string.ascii_letters, string.ascii_letters)
 
@@ -42,13 +46,6 @@ def raw_words(corpus):
         wordToint[word] = index
 
     return wordToint
-
-
-wordToint = raw_words(sentences)
-NUM_OF_WORDS = len(wordToint)
-
-NUM_OF_WORDS
-
 
 def remove_stop_words(corpus):
     stop_words = ['is', 'a', 'will', 'be']
@@ -77,10 +74,11 @@ def generate_data(sentences):
 
     return data
 
+wordToint = raw_words(sentences)
+NUM_OF_WORDS = len(wordToint)
 
 VOCAB_SIZE = len(wordToint)
-NUM_LABELS = 2
-EMDEDDING_DIM = 24
+dim_embedddings = 20
 
 sentences = remove_stop_words(sentences)
 data = generate_data(sentences)
@@ -90,12 +88,8 @@ x = [context for (context, target) in data]
 y = [target for (context, target) in data]
 x = np.array(x)
 y = np.array(y)
-from keras.models import Sequential
-from keras.layers import Embedding, Lambda, Dense
-from keras import optimizers
-from keras import backend as K
 
-dim_embedddings = 20
+
 model = Sequential()
 model.add(Embedding(VOCAB_SIZE, dim_embedddings, input_shape=(4,)))
 model.add(Lambda(lambda x: K.sum(x, axis=1), output_shape=(dim_embedddings,)))
