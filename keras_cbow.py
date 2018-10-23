@@ -91,10 +91,6 @@ EMDEDDING_DIM = 24
 
 sentences = remove_stop_words(sentences)
 data  = generate_data(sentences)
-
-import numpy as np
-
-data  = generate_data(sentences)
 data  =np.array(data)
 
 x = [context for (context,target) in data]
@@ -102,17 +98,8 @@ y = [target for (context,target) in data]
 x = np.array(x)
 y = np.array(y)
 
-from keras.models import Sequential
-from keras.layers import Embedding,Lambda
-from keras.layers import Dense, Activation, Flatten
-from keras.utils import np_utils
-from keras import optimizers
-from keras import backend as K
 
-x = x[0:-1:4]
-y = y[0:-1:4]
-
-dim_embedddings = 8
+dim_embedddings = 20
 model = Sequential()
 model.add(Embedding(VOCAB_SIZE,dim_embedddings , input_shape=(4,)))
 model.add(Lambda(lambda x : K.sum(x,axis=1),output_shape=(dim_embedddings,)))
