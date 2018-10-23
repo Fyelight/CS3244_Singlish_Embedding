@@ -18,7 +18,7 @@ import pandas as pd
 import gensim
 
 
-df = pd.read_csv('dataset.csv', index_col=None)
+df = pd.read_csv('combined_dataset.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
