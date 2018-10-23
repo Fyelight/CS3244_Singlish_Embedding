@@ -8,27 +8,27 @@ Original file is located at
 """
 
 # IMPORTS AND PREPARATION
-!pip install -U -q PyDrive
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from google.colab import auth, files
-from oauth2client.client import GoogleCredentials
+#!pip install -U -q PyDrive
+#from pydrive.auth import GoogleAuth
+#from pydrive.drive import GoogleDrive
+#from google.colab import auth, files
+#from oauth2client.client import GoogleCredentials
 import pandas as pd
 
 # Authenticate and create the PyDrive client.
-def authenticate():
-    auth.authenticate_user()
-    gauth = GoogleAuth()
-    gauth.credentials = GoogleCredentials.get_application_default()
-    return GoogleDrive(gauth)
+#def authenticate():
+#    auth.authenticate_user()
+#    gauth = GoogleAuth()
+#    gauth.credentials = GoogleCredentials.get_application_default()
+#    return GoogleDrive(gauth)
 
-drive = authenticate()
+#drive = authenticate()
 
 # Load the dataset as .csv
-download = drive.CreateFile({'id': '1MSwZRm3toMCyNrOQ0HbqIhCO1_eYUl5N'})
-download.GetContentFile('dataset.csv')
+#download = drive.CreateFile({'id': '1MSwZRm3toMCyNrOQ0HbqIhCO1_eYUl5N'})
+#download.GetContentFile('dataset.csv')
 
-df = pd.read_csv('dataset.csv', index_col=None)
+df = pd.read_csv('COMBINED dataset.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
@@ -135,7 +135,7 @@ for word, i in wordToint.items():
     f.write('{} {}\n'.format(word, ' '.join(map(str, list(vectors[i, :])))))
 f.close()
 
-!pip install gensim
+#!pip install gensim
 import gensim
 w2v = gensim.models.KeyedVectors.load_word2vec_format('./vectors.txt', binary=False)
 
