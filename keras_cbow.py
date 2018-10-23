@@ -7,26 +7,16 @@ Original file is located at
     https://colab.research.google.com/drive/1bcGEl24veoNgjlo-wV9cv8O1G7W8G5NA
 """
 
-# IMPORTS AND PREPARATION
-!pip install -U -q PyDrive
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from google.colab import auth, files
-from oauth2client.client import GoogleCredentials
+from keras.models import Sequential
+from keras.layers import Embedding,Lambda
+from keras.layers import Dense
+from keras import optimizers
+from keras import backend as K
+
+import numpy as np
 import pandas as pd
+import gensim
 
-# Authenticate and create the PyDrive client.
-def authenticate():
-    auth.authenticate_user()
-    gauth = GoogleAuth()
-    gauth.credentials = GoogleCredentials.get_application_default()
-    return GoogleDrive(gauth)
-
-drive = authenticate()
-
-# Load the dataset as .csv
-download = drive.CreateFile({'id': '1MSwZRm3toMCyNrOQ0HbqIhCO1_eYUl5N'})
-download.GetContentFile('dataset.csv')
 
 df = pd.read_csv('dataset.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
@@ -91,10 +81,6 @@ EMDEDDING_DIM = 24
 
 sentences = remove_stop_words(sentences)
 data  = generate_data(sentences)
-
-import numpy as np
-
-data  = generate_data(sentences)
 data  =np.array(data)
 
 x = [context for (context,target) in data]
@@ -102,17 +88,8 @@ y = [target for (context,target) in data]
 x = np.array(x)
 y = np.array(y)
 
-from keras.models import Sequential
-from keras.layers import Embedding,Lambda
-from keras.layers import Dense, Activation, Flatten
-from keras.utils import np_utils
-from keras import optimizers
-from keras import backend as K
 
-x = x[0:-1:4]
-y = y[0:-1:4]
-
-dim_embedddings = 8
+dim_embedddings = 20
 model = Sequential()
 model.add(Embedding(VOCAB_SIZE,dim_embedddings , input_shape=(4,)))
 model.add(Lambda(lambda x : K.sum(x,axis=1),output_shape=(dim_embedddings,)))
@@ -135,10 +112,4 @@ for word, i in wordToint.items():
     f.write('{} {}\n'.format(word, ' '.join(map(str, list(vectors[i, :])))))
 f.close()
 
-!pip install gensim
-import gensim
-w2v = gensim.models.KeyedVectors.load_word2vec_format('./vectors.txt', binary=False)
-
-files.download("vectors.txt")
-
-w2v.similar_by_vector("la")
+#w2v = gensim.models.KeyedVectors.load_word2vec_format('./vectors.txt', binary=False)
