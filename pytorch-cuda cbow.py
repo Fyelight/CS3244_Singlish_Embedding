@@ -15,7 +15,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_dataset.csv', index_col=None)
+df = pd.read_csv('combined_datasets.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
