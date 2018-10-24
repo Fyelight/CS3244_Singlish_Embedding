@@ -15,13 +15,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_datasets.csv', index_col=None)
+df = pd.read_csv('combined_datasets_1.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
-translation = str.maketrans(string.ascii_letters, string.ascii_letters, string.digits)
-
-f = lambda x: x.translate(translation)
+f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
 sentences = sentences.apply(f)
 
 
@@ -104,7 +102,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
 for epoch in range(5):
     total_loss = 0
-    for (context, target) in data:
+    for i,(context, target) in enumerate(data):
         context_vector = torch.cuda.LongTensor(context)
         context_vector = Variable(context_vector)
         model.zero_grad()
@@ -114,6 +112,10 @@ for epoch in range(5):
         optimizer.step()
 
         total_loss += loss.data
+
+        if(i%10000==0):
+            print("Step %i: loss is %d" %(i,total_loss))
+
 
     print("Step: %i loss: %d\n" % (epoch, total_loss))
 
