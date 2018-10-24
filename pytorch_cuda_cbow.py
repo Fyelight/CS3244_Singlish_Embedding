@@ -21,7 +21,7 @@ sentences = df['0'].astype(str)
 
 translation = string.maketrans("1234567890","")
 
-f = lambda x: x.translate(translation)
+f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
 sentences = sentences.apply(f)
 
 
