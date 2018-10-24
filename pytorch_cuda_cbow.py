@@ -19,7 +19,7 @@ df = pd.read_csv('combined_datasets.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
-translation = string.maketrans(string.digits,"")
+translation = string.maketrans("1234567890","")
 
 f = lambda x: x.translate(translation)
 sentences = sentences.apply(f)
