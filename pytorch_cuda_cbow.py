@@ -115,6 +115,7 @@ for epoch in range(5):
 
         total_loss += loss.data
 
+
     print("Step: %i loss: %d\n" % (epoch, total_loss))
 
 f = open('vectors_pytorch.txt', 'w')
