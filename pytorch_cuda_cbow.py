@@ -8,16 +8,17 @@ Original file is located at
 """
 
 import string
-
+import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_datasets_1.csv', index_col=None)
+df = pd.read_csv('combined_datasets.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
+
 
 f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
 sentences = sentences.apply(f)
@@ -102,7 +103,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
 for epoch in range(5):
     total_loss = 0
-    for i,(context, target) in enumerate(data):
+    for i, (context, target) in enumerate(data):
         context_vector = torch.cuda.LongTensor(context)
         context_vector = Variable(context_vector)
         model.zero_grad()
@@ -113,15 +114,15 @@ for epoch in range(5):
 
         total_loss += loss.data
 
-        if(i%10000==0):
-            print("Step %i: loss is %d" %(i,total_loss))
+        if (i % 10000 == 0):
+            print("Step %i: loss is %d" % (i, total_loss))
+
+    print("Epoch: %i loss: %d\n" % (epoch, total_loss))
+    f = open('vectors_pytorch_%i.txt' % (epoch), 'w')
+    f.write('{} {}\n'.format(NUM_OF_WORDS, EMBEDDING_DIM))
+    vectors = model.embeddings.weight.data
+    for word, i in wordToint.items():
+        f.write('{} {}\n'.format(word, ' '.join(map(str, list(np.array(vectors[i, :]))))))
+    f.close()
 
 
-    print("Step: %i loss: %d\n" % (epoch, total_loss))
-
-f = open('vectors_pytorch.txt', 'w')
-f.write('{} {}\n'.format(NUM_OF_WORDS, EMBEDDING_DIM))
-vectors = model.embeddings.weight.data
-for word, i in wordToint.items():
-    f.write('{} {}\n'.format(word, ' '.join(map(str, list(vectors[i, :])))))
-f.close()

@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1fUhN1Z13-4lfEbPYkYzwyu9WrbgieLLL
 """
 
-import string
-
 import numpy as np
 import pandas as pd
 from keras.layers import Embedding, Reshape, Activation, Input
@@ -17,13 +15,11 @@ from keras.models import Sequential, Model
 from keras.preprocessing.sequence import skipgrams
 from keras.preprocessing.text import Tokenizer
 
-df = pd.read_csv('dataset.csv', index_col=None)
+df = pd.read_csv('combined_datasets.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 corpus = df['0'].astype(str)
 
-translation = str.maketrans(string.ascii_letters, string.ascii_letters, string.digits)
-
-f = lambda x: x.translate(translation)
+f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
 corpus = corpus.apply(f)
 
 corpus = [sentence for sentence in corpus if sentence.count(' ') >= 2]
