@@ -61,7 +61,7 @@ for _ in range(5):
         x = [np.array(x).reshape(-1, 1) for x in zip(*data)]
         y = np.array(labels, dtype=np.int32)
         if x:
-            for i in range(ceil(len(x) / batch_size)):
+            for i in range(int(len(x) / batch_size)):
                 x_batch = [x[0][i * batch_size:(i + 1) * batch_size], x[1][i * batch_size:(i + 1) * batch_size]]
                 loss += SkipGram.train_on_batch(x_batch, y[i * batch_size:(i + 1) * batch_size])
 

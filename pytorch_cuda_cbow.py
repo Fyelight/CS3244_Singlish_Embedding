@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1gQcApjbLRoNtVMl2uVG7mMkFfc0q_TGb
 """
 
-import string
 import numpy as np
 import pandas as pd
 import torch
@@ -15,13 +14,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_datasets.csv', index_col=None)
+df = pd.read_csv('stemmed_dataset.csv', index_col=None)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
-
-
-f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
-sentences = sentences.apply(f)
 
 
 def raw_words(corpus):
@@ -101,7 +96,7 @@ model.cuda()
 loss_function = nn.NLLLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
 
-for epoch in range(5):
+for epoch in range(1):
     total_loss = 0
     for i, (context, target) in enumerate(data):
         context_vector = torch.cuda.LongTensor(context)
@@ -124,5 +119,3 @@ for epoch in range(5):
     for word, i in wordToint.items():
         f.write('{} {}\n'.format(word, ' '.join(map(str, list(np.array(vectors[i, :]))))))
     f.close()
-
-
