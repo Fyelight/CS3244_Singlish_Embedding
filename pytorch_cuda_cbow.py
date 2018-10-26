@@ -14,7 +14,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('stemmed_dataset.csv', index_col=None)
+df = pd.read_csv('combined_datasets.csv', index_col=None,)
+print(df.columns)
 NUM_SENTENCES = len(df['0'])
 sentences = df['0'].astype(str)
 
@@ -70,7 +71,7 @@ NUM_OF_WORDS = len(wordToint)
 
 VOCAB_SIZE = len(wordToint)
 NUM_LABELS = 2
-EMBEDDING_DIM = 24
+EMBEDDING_DIM = 100
 
 sentences = remove_stop_words(sentences)
 data = generate_data(sentences, wordToint)
@@ -94,7 +95,7 @@ class CBOW(nn.Module):
 model = CBOW(VOCAB_SIZE, EMBEDDING_DIM)
 model.cuda()
 loss_function = nn.NLLLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 for epoch in range(1):
     total_loss = 0
