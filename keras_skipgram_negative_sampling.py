@@ -15,23 +15,18 @@ from keras.models import Sequential, Model
 from keras.preprocessing.sequence import skipgrams
 from keras.preprocessing.text import Tokenizer
 
-df = pd.read_csv('combined_datasets.csv', index_col=None)
-NUM_SENTENCES = len(df['0'])
-corpus = df['0'].astype(str)
-
-f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
-corpus = corpus.apply(f)
+df = pd.read_csv('combined_clean_datasets.csv', index_col=None)
+NUM_SENTENCES = len(df['text'])
+corpus = df['text'].astype(str)
 
 corpus = [sentence for sentence in corpus if sentence.count(' ') >= 2]
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(corpus)
 V = len(tokenizer.word_index) + 1
 
-dim_embedddings = 24
+dim_embedddings = 100
 model = Sequential()
 model.add(Embedding(V, dim_embedddings, input_length=5))
-
-dim_embedddings = 24
 
 embedding = Embedding(V, dim_embedddings)
 
@@ -61,7 +56,8 @@ for _ in range(5):
         x = [np.array(x).reshape(-1, 1) for x in zip(*data)]
         y = np.array(labels, dtype=np.int32)
         if x:
-            for i in range(int(ceil(len(x) / batch_size))):
+
+            for i in range(int(len(x) / batch_size)):
                 x_batch = [x[0][i * batch_size:(i + 1) * batch_size], x[1][i * batch_size:(i + 1) * batch_size]]
                 loss += SkipGram.train_on_batch(x_batch, y[i * batch_size:(i + 1) * batch_size])
 

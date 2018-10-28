@@ -7,7 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1gQcApjbLRoNtVMl2uVG7mMkFfc0q_TGb
 """
 
-import string
 import numpy as np
 import pandas as pd
 import torch
@@ -15,13 +14,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_datasets.csv', index_col=None)
-NUM_SENTENCES = len(df['0'])
-sentences = df['0'].astype(str)
-
-
-f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
-sentences = sentences.apply(f)
+df = pd.read_csv('combined_clean_dataset.csv', index_col=None,)
+NUM_SENTENCES = len(df['text'])
+sentences = df['text'].astype(str)
 
 
 def raw_words(corpus):
@@ -75,7 +70,7 @@ NUM_OF_WORDS = len(wordToint)
 
 VOCAB_SIZE = len(wordToint)
 NUM_LABELS = 2
-EMBEDDING_DIM = 24
+EMBEDDING_DIM = 100
 
 sentences = remove_stop_words(sentences)
 data = generate_data(sentences, wordToint)
@@ -99,7 +94,7 @@ class CBOW(nn.Module):
 model = CBOW(VOCAB_SIZE, EMBEDDING_DIM)
 model.cuda()
 loss_function = nn.NLLLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
 for epoch in range(5):
     total_loss = 0
@@ -114,7 +109,7 @@ for epoch in range(5):
 
         total_loss += loss.data
 
-        if (i % 10000 == 0):
+        if (i % 1000 == 0):
             print("Step %i: loss is %d" % (i, total_loss))
 
     print("Epoch: %i loss: %d\n" % (epoch, total_loss))
@@ -124,5 +119,3 @@ for epoch in range(5):
     for word, i in wordToint.items():
         f.write('{} {}\n'.format(word, ' '.join(map(str, list(np.array(vectors[i, :]))))))
     f.close()
-
-
