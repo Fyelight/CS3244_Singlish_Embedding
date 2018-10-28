@@ -20,18 +20,14 @@ from keras.models import Sequential
 sess = tf.Session(config=tf.ConfigProto(log_device_placement=True))
 print(sess)
 
-df = pd.read_csv('COMBINED dataset.csv', index_col=None)
-NUM_SENTENCES = len(df['0'])
-sentences = df['0'].astype(str)
+df = pd.read_csv('combined_clean_dataset.csv', index_col=None)
+NUM_SENTENCES = len(df['text'])
+sentences = df['text'].astype(str)
 
-translation = string.maketrans(string.ascii_letters, string.ascii_letters)
-
-f = lambda x: x.translate(translation)
-sentences = sentences.apply(f)
 
 
 def raw_words(corpus):
-    stop_words = ['is', 'a', 'will', 'be']
+    stop_words = ['is', 'are','a', 'will', 'be']
     words = []
     for sentence in corpus:
         sentence = sentence.split()
@@ -48,7 +44,7 @@ def raw_words(corpus):
     return wordToint
 
 def remove_stop_words(corpus):
-    stop_words = ['is', 'a', 'will', 'be']
+    stop_words = ['is', 'are','a', 'will', 'be']
     clean_data = []
     for sentence in corpus:
         sen = sentence.split()
@@ -78,7 +74,7 @@ wordToint = raw_words(sentences)
 NUM_OF_WORDS = len(wordToint)
 
 VOCAB_SIZE = len(wordToint)
-dim_embedddings = 20
+dim_embedddings = 100
 
 sentences = remove_stop_words(sentences)
 data = generate_data(sentences)

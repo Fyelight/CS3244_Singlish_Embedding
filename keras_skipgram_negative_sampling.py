@@ -15,23 +15,18 @@ from keras.models import Sequential, Model
 from keras.preprocessing.sequence import skipgrams
 from keras.preprocessing.text import Tokenizer
 
-df = pd.read_csv('combined_datasets.csv', index_col=None)
-NUM_SENTENCES = len(df['0'])
-corpus = df['0'].astype(str)
-
-f = lambda x: x.translate(None,'!"%&\'()*+,-./:;<=>?[\\]^_`{|}~')
-corpus = corpus.apply(f)
+df = pd.read_csv('combined_clean_datasets.csv', index_col=None)
+NUM_SENTENCES = len(df['text'])
+corpus = df['text'].astype(str)
 
 corpus = [sentence for sentence in corpus if sentence.count(' ') >= 2]
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(corpus)
 V = len(tokenizer.word_index) + 1
 
-dim_embedddings = 24
+dim_embedddings = 100
 model = Sequential()
 model.add(Embedding(V, dim_embedddings, input_length=5))
-
-dim_embedddings = 24
 
 embedding = Embedding(V, dim_embedddings)
 
