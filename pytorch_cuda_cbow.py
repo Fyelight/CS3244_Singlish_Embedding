@@ -97,7 +97,7 @@ model.cuda()
 loss_function = nn.NLLLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.5)
 
-for epoch in range(1):
+for epoch in range(5):
     total_loss = 0
     for i, (context, target) in enumerate(data):
         context_vector = torch.cuda.LongTensor(context)
@@ -110,7 +110,7 @@ for epoch in range(1):
 
         total_loss += loss.data
 
-        if (i % 10000 == 0):
+        if (i % 1000 == 0):
             print("Step %i: loss is %d" % (i, total_loss))
 
     print("Epoch: %i loss: %d\n" % (epoch, total_loss))
