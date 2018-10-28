@@ -14,10 +14,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-df = pd.read_csv('combined_datasets.csv', index_col=None,)
+df = pd.read_csv('combined_clean_datasets.csv', index_col=None,)
 print(df.columns)
-NUM_SENTENCES = len(df['0'])
-sentences = df['0'].astype(str)
+NUM_SENTENCES = len(df['text'])
+sentences = df['text'].astype(str)
 
 
 def raw_words(corpus):
